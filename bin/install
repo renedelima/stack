@@ -1,0 +1,87 @@
+#!/bin/zsh
+
+function _brew() {
+    if ! type brew > /dev/null; then
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        echo 'eval $(/opt/homebrew/bin/brew shellenv)' >> ~/.zprofile
+        eval $(/opt/homebrew/bin/brew shellenv)
+    fi
+
+    return 0
+}
+
+function _formulae() {
+    if ! type brew > /dev/null; then
+        return 2
+    fi
+
+    local PHP_RELEASES=(
+        7.4
+        8.0
+        8.1
+    )
+
+    brew tap shivammathur/php
+    brew tap shivammathur/extensions
+    brew tap symfony-cli/tap
+    for RELEASE in $PHP_RELEASES; do
+        brew install --formula \
+            shivammathur/php/php@$RELEASE \
+            amqp@$RELEASE \
+            apcu@$RELEASE \
+            gnupg@$RELEASE \
+            imagick@$RELEASE \
+            memcached@$RELEASE \
+            redis@$RELEASE \
+            xdebug@$RELEASE
+        sudo cp -fv \
+            $(cd $(dirname "$BASH_SOURCE[0]")/.. >/dev/null 2>&1 && pwd)/etc/php/php.ini \
+            $($(brew --prefix php@$RELEASE)/bin/php -r 'echo PHP_CONFIG_FILE_SCAN_DIR;')/custom.ini
+    done
+    brew install --ignore-dependencies \
+        composer \
+        phive
+    brew install \
+        bat \
+        lazygit \
+        node \
+        symfony-cli \
+        tldr \
+        tree \
+        yarn
+
+    return 0
+}
+
+function _casks() {
+    if ! type brew > /dev/null; then
+        return 2
+    fi
+
+    brew install --cask --force \
+        docker \
+        phpstorm \
+        github
+
+    return 0
+}
+
+function _archives() {
+    if ! type phive > /dev/null; then
+        return 2
+    fi
+
+    sudo phive install --global \
+        churn \
+        composer-normalize \
+        composer-require-checker \
+        composer-unused \
+        phploc
+
+    return 0
+}
+
+_brew
+_formulae
+_casks
+_archives

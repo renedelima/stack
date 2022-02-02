@@ -1,0 +1,82 @@
+#!/bin/zsh
+
+function _brew() {
+    if ! type brew > /dev/null; then
+        return 2
+    fi
+
+    local REPOSITORY
+    REPOSITORY=$(brew --repository)
+
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+    sudo rm -rf $REPOSITORY
+
+    return 0
+}
+
+function _formulae() {
+    if ! type brew > /dev/null; then
+        return 2
+    fi
+
+    local BREW_FORMULAE
+    BREW_FORMULAE=($(brew list --formula))
+
+    if [ -n "$BREW_FORMULAE" ]; then
+        brew update --verbose
+        brew uninstall --formula $BREW_FORMULAE
+        brew autoremove
+        brew cleanup
+        brew services stop --all
+        brew services cleanup
+        sudo rm -rf $(brew --cellar)/*
+    fi
+
+    return 0
+}
+
+function _casks() {
+    if ! type brew > /dev/null; then
+        return 2
+    fi
+
+    local BREW_CASKS
+    BREW_CASKS=($(brew list --casks))
+
+    if [ -n "$BREW_CASKS" ]; then
+        brew update --verbose
+        brew uninstall --cask $BREW_CASKS
+        brew cleanup
+        sudo rm -rf $(brew --caskroom)/*
+    fi
+
+    return 0
+}
+
+function _archives() {
+    if ! type phive > /dev/null; then
+        return 2
+    fi
+
+    phive update-repository-list
+    sudo phive remove --global \
+        churn \
+        composer-normalize \
+        composer-require-checker \
+        composer-unused \
+        phploc
+    phive purge
+    sudo rm -rfv \
+        /usr/local/bin/churn \
+        /usr/local/bin/composer-normalize \
+        /usr/local/bin/composer-require-checker \
+        /usr/local/bin/composer-unused \
+        /usr/local/bin/phploc
+
+    return 0
+}
+
+_archives
+_casks
+_formulae
+_brew

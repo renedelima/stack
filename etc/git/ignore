@@ -1,0 +1,8 @@
+.DS_Store/
+.idea/
+.php-cs-fixer.cache
+.php_cs.cache
+composer.*.json
+composer.*.lock
+docker-compose.override.yaml
+docker-compose.override.yml

@@ -1,0 +1,59 @@
+#!/bin/zsh
+
+function _shell() {
+    local ROOT
+    ROOT=$(cd $(dirname "${BASH_SOURCE[0]}")/.. >/dev/null 2>&1 && pwd)
+
+    if [ ! -f ~/.zshrc~ ]; then
+        mv -fv ~/.zshrc ~/.zshrc~
+    fi
+    cp -fv $ROOT/etc/zsh/.zshrc ~/.zshrc
+
+    return 0
+}
+
+function _git() {
+    if ! type git > /dev/null; then
+        return 2
+    fi
+
+    local ROOT
+    ROOT=$(cd $(dirname "${BASH_SOURCE[0]}")/.. >/dev/null 2>&1 && pwd)
+
+    if [ ! -f ~/.gitconfig~ ]; then
+        mv -fv ~/.gitconfig ~/.gitconfig~
+    fi
+    cp -fv $ROOT/etc/git/.gitconfig ~/.gitconfig
+
+    mkdir -p ~/.config/git
+    cp -fv $ROOT/etc/git/attributes ~/.config/git/attributes
+    cp -fv $ROOT/etc/git/ignore ~/.config/git/ignore
+
+    return 0
+}
+
+function _jobs() {
+    # Enable finding files with locate command
+    if [ -z "$(sudo launchctl list | grep com.apple.locate)" ]; then
+        sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
+        cd / && sudo /usr/libexec/locate.updatedb
+    fi
+
+    return 0
+}
+
+function _preferences() {
+    # Stop creating .DS_Store on network and removable storage
+    defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+    defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+
+    # Avoid saving screenshots on ~/Desktop folder
+    defaults write com.apple.screencapture location "~/Pictures/Screen Shots/"
+
+    return 0
+}
+
+_shell
+_git
+_jobs
+_preferences

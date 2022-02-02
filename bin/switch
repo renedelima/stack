@@ -1,0 +1,27 @@
+#!/bin/zsh
+
+declare TARGET
+TARGET=$1
+
+# Is Homebrew available?
+if ! type brew > /dev/null; then
+    exit 2
+fi
+
+# Is the targeted PHP release available?
+if ! [[ -d $(brew --prefix php)@$TARGET ]]; then
+    exit 2
+fi
+
+# Is there a PHP release previously linked?
+if type php > /dev/null; then
+    declare CURRENT
+    CURRENT=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')
+    brew unlink shivammathur/php/php@$CURRENT
+fi
+
+# Make targeted PHP release available through symlink.
+brew link --overwrite --force shivammathur/php/php@$TARGET
+php --version
+
+exit 0

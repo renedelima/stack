@@ -1,0 +1,30 @@
+#!/bin/zsh
+
+function _brew() {
+    if ! type brew > /dev/null; then
+        return 2
+    fi
+
+    brew update --verbose
+    brew upgrade
+    brew outdated
+    brew cleanup
+    brew services cleanup
+
+    return 0
+}
+
+function _phive() {
+    if ! type phive > /dev/null; then
+        return 2
+    fi
+
+    phive update-repository-list
+    phive update
+    phive purge
+
+    return 0
+}
+
+_brew
+_phive
