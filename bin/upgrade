@@ -8,8 +8,11 @@ function _brew() {
     local BREW_CASKS
     BREW_CASKS=($(brew list --casks))
 
+    local BREW_FORMULAE
+    BREW_FORMULAE=($(brew list --formulae))
+
     brew update --verbose
-    brew upgrade
+    brew upgrade --formula $BREW_FORMULAE
     brew upgrade --cask $BREW_CASKS
     brew outdated
     brew cleanup
