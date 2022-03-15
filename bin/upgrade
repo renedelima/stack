@@ -5,8 +5,12 @@ function _brew() {
         return 2
     fi
 
+    local BREW_CASKS
+    BREW_CASKS=($(brew list --casks))
+
     brew update --verbose
     brew upgrade
+    brew upgrade --cask $BREW_CASKS
     brew outdated
     brew cleanup
     brew services cleanup
