@@ -1,0 +1,30 @@
+version: "3.8"
+
+networks:
+
+    default:
+        name: local
+
+services:
+
+    redis:
+        image: redis:6
+        volumes:
+            - redis:/data
+        ports:
+            - 6379 # Protocol
+
+    redisinsight:
+        image: redislabs/redisinsight
+        depends_on:
+            - redis
+        volumes:
+            - redisinsight:/db
+        ports:
+            - 8001 # Web interface
+
+volumes:
+
+    redis:
+
+    redisinsight:

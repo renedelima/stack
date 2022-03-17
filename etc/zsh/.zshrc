@@ -13,3 +13,7 @@ alias mv='mv -i'
 alias path='echo -e ${PATH//:/\\n}'
 alias iown='sudo chown -R $USER:$USER'
 alias updatedb='cd / && sudo /usr/libexec/locate.updatedb && cd -'
+
+mkcd(){
+    mkdir $1 && cd $1
+}

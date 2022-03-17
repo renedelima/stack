@@ -1,0 +1,19 @@
+version: "3.8"
+
+networks:
+
+    default:
+        name: local
+
+services:
+
+    meilisearch:
+        image: getmeili/meilisearch
+        volumes:
+            - meilisearch:/data.ms
+        ports:
+            - 7700 # API
+
+volumes:
+
+    meilisearch:

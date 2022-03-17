@@ -1,0 +1,21 @@
+version: "3.8"
+
+networks:
+
+    default:
+        name: local
+
+services:
+
+    postgres:
+        image: postgres:14
+        environment:
+            POSTGRES_PASSWORD: postgres
+        volumes:
+            - postgres:/var/lib/postgresql/data
+        ports:
+            - 5432 # Protocol
+
+volumes:
+
+    postgres:
