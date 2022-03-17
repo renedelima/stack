@@ -49,6 +49,7 @@ function _preferences() {
 
     # Avoid saving screenshots on ~/Desktop folder
     defaults write com.apple.screencapture location "~/Pictures/Screen Shots/"
+    defaults write com.apple.screencapture type JPG
 
     return 0
 }
